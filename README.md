@@ -1,0 +1,175 @@
+# ComfyUI LTX BBox Animator
+
+Interactive bounding-box control and regional prompting for **LTX 2.5** in ComfyUI.
+
+Draw and animate bounding boxes, describe each object independently, and generate the control frames and regional conditioning required to place the right subjects in the right locations.
+
+Requires the corresponding **LTX BBox IC-LoRA**.
+
+## Features
+
+- **Interactive bbox editor**: Draw, move, resize, and animate objects on a responsive full-screen canvas.
+- **Independent object prompts**: Assign a separate prompt to every bounding box without relying on color tags or prompt order.
+- **Animated regional masks**: Each object receives its own frame-by-frame mask, allowing prompts to follow moving boxes.
+- **Keyframe interpolation**: Intermediate positions and sizes are generated automatically between keyframes.
+- **Training-matched controls**: Produces hollow white bounding boxes with a clipped center-motion trail on a black background.
+- **Flexible object count**: Add as many objects as your available VRAM permits.
+- **Per-object controls**: Configure names, prompt strength, enabled state, and start/end frames.
+- **Offscreen animation**: Move bounding boxes partially or completely outside the visible frame.
+- **Canvas navigation**: Scroll to zoom, drag empty space to pan, and reset the view with **Fit**.
+- **Reference images**: Load an optional background image to plan object placement.
+- **Scene-level prompting**: Define shared style and environment separately from individual object descriptions.
+
+## Installation
+
+1. Clone this repository into your ComfyUI `custom_nodes` directory:
+
+   ```bash
+   cd ComfyUI/custom_nodes
+   git clone https://github.com/yuvraj108c/ComfyUI-LTX-Bbox
+   ```
+
+2. Download the corresponding **LTX BBox IC-LoRA** into `ComfyUI/models/loras`.
+
+3. Restart ComfyUI and refresh your browser.
+
+If you previously installed an older standalone regional-conditioning node or another copy of this package, remove the duplicate before restarting ComfyUI.
+
+## Quick Start
+
+1. Add the **LTX BBox Animator** node.
+2. Connect your LTX text encoder to its `clip` input.
+3. Choose the output resolution, frame count, and frame rate.
+4. Click **Open BBox Animator**.
+5. Enter the overall **Style** and **Scene** prompts.
+6. Click **Add object**, draw its bounding box, and enter its regional prompt.
+7. Move to another frame and reposition or resize the box to create an animation keyframe.
+8. Repeat for additional objects.
+9. Optionally load a reference image from the bottom of the left sidebar.
+10. Click **Save & Close**.
+11. Connect the generated controls, conditioning, and regions as described below.
+
+Editor colors only identify tracks visually. The generated control video uses **white bounding boxes for every object**.
+
+## Connecting the Workflow
+
+Add both **LTX BBox Animator** and **LTX Apply Regional Conditioning**.
+
+| Animator output | Connect to |
+| --- | --- |
+| `control_images` | The image input of your LTX IC-LoRA guide node. |
+| `global_conditioning` | Your workflow's positive conditioning input. |
+| `regions` | The `regions` input of **LTX Apply Regional Conditioning**. |
+| `global_prompt` | Optional text preview or other compatible string input. |
+
+Then configure **LTX Apply Regional Conditioning**:
+
+1. Connect your loaded LTX model to `model`.
+2. Connect the **video-only latent** to `video_latent`.
+3. Connect the animator's `regions` output to `regions`.
+4. Connect the returned `model` to your sampler or model-processing chain.
+
+> **Important:** `video_latent` must be connected before audio/video latent concatenation. Do not connect the combined output of `LTXVConcatAVLatent`.
+
+Leave the negative conditioning branch unchanged.
+
+### Recommended Prompt Weights
+
+```text
+regional_prompt_weight: 0.85
+global_prompt_weight:   0.15
+```
+
+Regional prompts describe the individual subjects. The global prompt describes the shared setting, visual style, and lighting.
+
+## Node Interface
+
+### LTX BBox Animator
+
+#### Inputs
+
+- **`clip`**: LTX text encoder used to encode the global scene and each object prompt.
+- **`width` / `height`**: Output control-frame resolution.
+- **`total_frames`**: Number of generated video frames.
+- **`frame_rate`**: Playback rate used by the interactive editor.
+- **`bbox_data_json`**: Serialized editor state; managed automatically.
+
+#### Outputs
+
+- **`control_images`**: ComfyUI `IMAGE` batch containing white animated bbox controls on a black background.
+- **`global_conditioning`**: Encoded conditioning for the shared style and scene prompt.
+- **`regions`**: Independently encoded object prompts paired with animated regional masks.
+- **`global_prompt`**: Combined global prompt as a plain string.
+
+### LTX Apply Regional Conditioning
+
+#### Inputs
+
+- **`model`**: LTX diffusion model, including the loaded bbox IC-LoRA.
+- **`video_latent`**: Video-only latent before audio/video concatenation.
+- **`regions`**: Regional conditioning generated by **LTX BBox Animator**.
+- **`regional_prompt_weight`**: Relative contribution of object-specific prompts.
+- **`global_prompt_weight`**: Relative contribution of the shared scene prompt.
+
+#### Output
+
+- **`model`**: Patched model with spatially restricted regional text conditioning.
+
+## Example Prompts
+
+### Global Style
+
+```text
+High-contrast cinematic street photography with crisp afternoon sunlight,
+sharp shadows, steady eye-level framing, and natural colors.
+```
+
+### Global Scene
+
+```text
+A modern glass office plaza with reflective skyscraper windows and polished
+concrete, where two businesspeople walk across the frame.
+```
+
+### Object 1
+
+```text
+A businessman wearing a tailored charcoal-gray three-piece suit, a white
+shirt, and polished black leather shoes.
+```
+
+### Object 2
+
+```text
+A businesswoman wearing a flowing scarlet-red silk dress and matching red
+high-heeled shoes.
+```
+
+To swap the subjects, exchange the two object prompts while keeping their bounding boxes unchanged.
+
+## Notes
+
+- Bounding-box colors in the editor are visual identifiers only and do not control the generated subject.
+- Object prompts are encoded independently; they are not appended to the global prompt.
+- The reference image is only an editor guide and is not sent to the model.
+- More active objects increase text-conditioning memory usage.
+- Smaller boxes and unusual object shapes can reduce prompt adherence.
+
+## Support
+
+If you like my projects and wish to see updates and new features, please consider supporting me. It helps a lot!
+
+[![ComfyUI-Depth-Anything-Tensorrt](https://img.shields.io/badge/ComfyUI--Depth--Anything--Tensorrt-blue?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Depth-Anything-Tensorrt)
+[![ComfyUI-Upscaler-Tensorrt](https://img.shields.io/badge/ComfyUI--Upscaler--Tensorrt-blue?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Upscaler-Tensorrt)
+[![ComfyUI-Dwpose-Tensorrt](https://img.shields.io/badge/ComfyUI--Dwpose--Tensorrt-blue?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Dwpose-Tensorrt)
+[![ComfyUI-Rife-Tensorrt](https://img.shields.io/badge/ComfyUI--Rife--Tensorrt-blue?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Rife-Tensorrt)
+
+[![ComfyUI-Whisper](https://img.shields.io/badge/ComfyUI--Whisper-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Whisper)
+[![ComfyUI_InvSR](https://img.shields.io/badge/ComfyUI__InvSR-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI_InvSR)
+[![ComfyUI-FLOAT](https://img.shields.io/badge/ComfyUI--FLOAT-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-FLOAT)
+[![ComfyUI-Thera](https://img.shields.io/badge/ComfyUI--Thera-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Thera)
+[![ComfyUI-Video-Depth-Anything](https://img.shields.io/badge/ComfyUI--Video--Depth--Anything-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Video-Depth-Anything)
+[![ComfyUI-PiperTTS](https://img.shields.io/badge/ComfyUI--PiperTTS-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-PiperTTS)
+
+[![buy-me-coffees](https://i.imgur.com/3MDbAtw.png)](https://www.buymeacoffee.com/yuvraj108cZ)
+[![paypal-donation](https://i.imgur.com/w5jjubk.png)](https://paypal.me/yuvraj108c)
