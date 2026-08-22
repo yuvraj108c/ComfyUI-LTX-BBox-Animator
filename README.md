@@ -30,50 +30,58 @@ Requires this IC-Lora: [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]()
 
 ## Quick Start
 
-1. Add the **LTX BBox Animator** node.
-2. Connect your LTX text encoder to its `clip` input.
-3. Choose the output resolution, frame count, and frame rate.
-4. Click **Open BBox Animator**.
-5. Enter the overall **Style** and **Scene** prompts.
-6. Click **Add object**, draw its bounding box, and enter its regional prompt.
-7. Move to another frame and reposition or resize the box to create an animation keyframe.
-8. Repeat for additional objects.
-9. Optionally load a reference image from the bottom of the left sidebar.
-10. Click **Save & Close**.
-11. Connect the generated controls, conditioning, and regions as described below.
+1. Load the [example workflow]()
+2. Set width/height/fps/frame count & open the bbox animator
+3. Click Add object, draw its bounding box, and enter its regional prompt
+4. Change position/size across time & click play to visualize movements
+5. Save and close
 
-Editor colors only identify tracks visually. The generated control video uses **white bounding boxes for every object**.
+## Prompting Guide
 
-## Connecting the Workflow
+### Global Prompt
 
-Add both **LTX BBox Animator** and **LTX Apply Regional Conditioning**.
+It's recommended to use the following structure. The word `where` connects the environment to the scene’s subjects and action. 
+- Do not include detailed appearances here; those belong in the regional prompts.
+- Mention the intended object count in the global scene, such as two people, three animals, or ten object
 
-| Animator output | Connect to |
-| --- | --- |
-| `control_images` | The image input of your LTX IC-LoRA guide node. |
-| `global_conditioning` | Your workflow's positive conditioning input. |
-| `regions` | The `regions` input of **LTX Apply Regional Conditioning**. |
-| `global_prompt` | Optional text preview or other compatible string input. |
+```text
+style: [visual style, lighting, camera, and color treatment]
+scene: [environment and setting], where [number and general type of objects perform the overall action].
+```
+Example:
+```text
+style: High-contrast cinematic street photography with crisp afternoon sunlight,
+sharp shadows, steady eye-level framing, and natural colors.
 
-Then configure **LTX Apply Regional Conditioning**:
+scene: A modern glass office plaza with reflective skyscraper windows and polished
+concrete, where two businesspeople walk across the frame.
+```
+### Regional Object Prompts
 
-1. Connect your loaded LTX model to `model`.
-2. Connect the **video-only latent** to `video_latent`.
-3. Connect the animator's `regions` output to `regions`.
-4. Connect the returned `model` to your sampler or model-processing chain.
+- Here, describe only the object assigned to each bounding box. Talk about appearance, clothing, materials etc
+- Mentioning the objects’ positions can improve placement e.g walking from the left side toward the right
 
-> **Important:** `video_latent` must be connected before audio/video latent concatenation. Do not connect the combined output of `LTXVConcatAVLatent`.
+**Object 1**
 
-Leave the negative conditioning branch unchanged.
+```text
+A businessman wearing a tailored charcoal-gray three-piece suit, a white shirt,
+and polished black leather shoes, walking on the left side of the frame.
+```
 
-### Recommended Prompt Weights
+**Object 2**
+
+```text
+A businesswoman wearing a flowing scarlet-red silk dress and matching red
+high-heeled shoes, walking on the right side of the frame.
+```
+## Prompt Weights
+
+These values were used during training. Use them or feel free to experiment.
 
 ```text
 regional_prompt_weight: 0.85
 global_prompt_weight:   0.15
 ```
-
-Regional prompts describe the individual subjects. The global prompt describes the shared setting, visual style, and lighting.
 
 ## Node Interface
 
@@ -108,36 +116,6 @@ Regional prompts describe the individual subjects. The global prompt describes t
 
 - **`model`**: Patched model with spatially restricted regional text conditioning.
 
-## Example Prompts
-
-### Global Style
-
-```text
-High-contrast cinematic street photography with crisp afternoon sunlight,
-sharp shadows, steady eye-level framing, and natural colors.
-```
-
-### Global Scene
-
-```text
-A modern glass office plaza with reflective skyscraper windows and polished
-concrete, where two businesspeople walk across the frame.
-```
-
-### Object 1
-
-```text
-A businessman wearing a tailored charcoal-gray three-piece suit, a white
-shirt, and polished black leather shoes.
-```
-
-### Object 2
-
-```text
-A businesswoman wearing a flowing scarlet-red silk dress and matching red
-high-heeled shoes.
-```
-
 ## Notes
 
 - Bounding-box colors in the editor are visual identifiers only and do not control the generated subject.
@@ -145,10 +123,6 @@ high-heeled shoes.
 - The reference image is only an editor guide and is not sent to the model.
 - More active objects increase text-conditioning memory usage.
 - Smaller boxes and unusual object shapes can reduce prompt adherence.
-
-## Acknowledgements
-- Gemini and ChatGPT
-- LTX 
 
 ## Support
 
@@ -165,6 +139,10 @@ If you like my projects and wish to see updates and new features, please conside
 [![ComfyUI-Thera](https://img.shields.io/badge/ComfyUI--Thera-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Thera)
 [![ComfyUI-Video-Depth-Anything](https://img.shields.io/badge/ComfyUI--Video--Depth--Anything-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-Video-Depth-Anything)
 [![ComfyUI-PiperTTS](https://img.shields.io/badge/ComfyUI--PiperTTS-gray?style=flat-square)](https://github.com/yuvraj108c/ComfyUI-PiperTTS)
+
+## Acknowledgements
+- Gemini and ChatGPT
+- LTX 
 
 [![buy-me-coffees](https://i.imgur.com/3MDbAtw.png)](https://www.buymeacoffee.com/yuvraj108cZ)
 [![paypal-donation](https://i.imgur.com/w5jjubk.png)](https://paypal.me/yuvraj108c)
