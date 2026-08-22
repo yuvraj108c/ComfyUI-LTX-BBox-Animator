@@ -1,8 +1,11 @@
 # ComfyUI LTX BBox Animator
 
-A custom node for LTX 2.5 which adds support for bounding boxes control and regional prompting
+A custom node for LTX 2.5 which adds support for bounding box control and regional prompting.
 
 Requires this IC-Lora: [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]()
+
+<img width="1200" height="400" alt="banner-1" src="https://github.com/user-attachments/assets/8a4ac3a4-8969-41ab-bc00-15eb2fd82fd9" />
+
 
 ## Key Features
 
