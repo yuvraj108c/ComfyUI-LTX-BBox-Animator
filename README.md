@@ -1,24 +1,16 @@
 # ComfyUI LTX BBox Animator
 
-Interactive bounding-box control and regional prompting for **LTX 2.5** in ComfyUI.
+A custom node for LTX 2.5 which adds support for bounding boxes control and regional prompting
 
-Draw and animate bounding boxes, describe each object independently, and generate the control frames and regional conditioning required to place the right subjects in the right locations.
+Requires this IC-Lora: [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]()
 
-Requires the corresponding **LTX BBox IC-LoRA**.
+## Key Features
 
-## Features
-
-- **Interactive bbox editor**: Draw, move, resize, and animate objects on a responsive full-screen canvas.
-- **Independent object prompts**: Assign a separate prompt to every bounding box without relying on color tags or prompt order.
-- **Animated regional masks**: Each object receives its own frame-by-frame mask, allowing prompts to follow moving boxes.
-- **Keyframe interpolation**: Intermediate positions and sizes are generated automatically between keyframes.
-- **Training-matched controls**: Produces hollow white bounding boxes with a clipped center-motion trail on a black background.
-- **Flexible object count**: Add as many objects as your available VRAM permits.
-- **Per-object controls**: Configure names, prompt strength, enabled state, and start/end frames.
-- **Offscreen animation**: Move bounding boxes partially or completely outside the visible frame.
-- **Canvas navigation**: Scroll to zoom, drag empty space to pan, and reset the view with **Fit**.
-- **Reference images**: Load an optional background image to plan object placement.
-- **Scene-level prompting**: Define shared style and environment separately from individual object descriptions.
+- **Interactive editor**: Draw, resize, and animate bounding boxes.
+- **Regional prompting**: Describe each object independently.
+- **Keyframe interpolation**: Automatically interpolate bbox movements between frames.
+- **Multiple objects**: Control several objects within the same scene
+- **Reference images**: Use an image as a visual guide.
 
 ## Installation
 
@@ -26,14 +18,12 @@ Requires the corresponding **LTX BBox IC-LoRA**.
 
    ```bash
    cd ComfyUI/custom_nodes
-   git clone https://github.com/yuvraj108c/ComfyUI-LTX-Bbox
+   git clone https://github.com/yuvraj108c/ComfyUI-LTX-BBox-Animator
    ```
 
-2. Download the corresponding **LTX BBox IC-LoRA** into `ComfyUI/models/loras`.
+2. Download [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]() to `models/loras`.
 
 3. Restart ComfyUI and refresh your browser.
-
-If you previously installed an older standalone regional-conditioning node or another copy of this package, remove the duplicate before restarting ComfyUI.
 
 ## Quick Start
 
@@ -145,8 +135,6 @@ A businesswoman wearing a flowing scarlet-red silk dress and matching red
 high-heeled shoes.
 ```
 
-To swap the subjects, exchange the two object prompts while keeping their bounding boxes unchanged.
-
 ## Notes
 
 - Bounding-box colors in the editor are visual identifiers only and do not control the generated subject.
@@ -154,6 +142,10 @@ To swap the subjects, exchange the two object prompts while keeping their boundi
 - The reference image is only an editor guide and is not sent to the model.
 - More active objects increase text-conditioning memory usage.
 - Smaller boxes and unusual object shapes can reduce prompt adherence.
+
+## Acknowledgements
+- Gemini and ChatGPT
+- LTX 
 
 ## Support
 
