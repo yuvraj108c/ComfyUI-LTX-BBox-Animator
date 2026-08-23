@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "name": "Two-Person Crossover",
+  "description": "A businessman and businesswoman cross three times; swap their prompts to test binding.",
+  "style_prompt": "High-contrast cinematic street photography with crisp afternoon sunlight, sharp shadows, steady eye-level camera framing, realistic detail, and natural colors.",
+  "scene_prompt": "A modern glass office plaza with reflective skyscraper windows and polished concrete, where exactly two businesspeople walk repeatedly along opposing paths and cross one another three times.",
+  "objects": [
+    {
+      "name": "Businessman",
+      "prompt": "A businessman wearing a tailored charcoal-gray three-piece wool suit, a white dress shirt, polished black leather shoes, and carrying a slim dark leather briefcase.",
+      "strength": 1.0,
+      "enabled": true,
+      "start_frame": 0.0,
+      "end_frame": 1.0,
+      "keyframes": [
+        { "frame": 0.0, "box": [0.06, 0.17, 0.24, 0.89] },
+        { "frame": 0.333333, "box": [0.76, 0.17, 0.94, 0.89] },
+        { "frame": 0.666667, "box": [0.06, 0.17, 0.24, 0.89] },
+        { "frame": 1.0, "box": [0.76, 0.17, 0.94, 0.89] }
+      ]
+    },
+    {
+      "name": "Businesswoman",
+      "prompt": "A businesswoman wearing a flowing scarlet-red silk dress and matching red high-heeled shoes, with shoulder-length blonde hair and a poised confident stride.",
+      "strength": 1.0,
+      "enabled": true,
+      "start_frame": 0.0,
+      "end_frame": 1.0,
+      "keyframes": [
+        { "frame": 0.0, "box": [0.76, 0.18, 0.94, 0.90] },
+        { "frame": 0.333333, "box": [0.06, 0.18, 0.24, 0.90] },
+        { "frame": 0.666667, "box": [0.76, 0.18, 0.94, 0.90] },
+        { "frame": 1.0, "box": [0.06, 0.18, 0.24, 0.90] }
+      ]
+    }
+  ]
+}

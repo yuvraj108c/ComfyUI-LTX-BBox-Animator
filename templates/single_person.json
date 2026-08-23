@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "name": "Single Walking Person",
+  "description": "One subject walks across a sunlit city plaza.",
+  "style_prompt": "Cinematic street photography with crisp afternoon sunlight, soft natural shadows, realistic textures, steady eye-level camera framing, and natural colors.",
+  "scene_prompt": "A spacious modern office plaza with polished concrete paving and reflective glass buildings, where a single person walks steadily across the frame.",
+  "objects": [
+    {
+      "name": "Walking person",
+      "prompt": "A man wearing a dark charcoal jacket, beige trousers, and clean white sneakers, walking naturally with a relaxed upright posture and a steady stride.",
+      "strength": 1.0,
+      "enabled": true,
+      "start_frame": 0.0,
+      "end_frame": 1.0,
+      "keyframes": [
+        { "frame": 0.0, "box": [0.07, 0.22, 0.27, 0.87] },
+        { "frame": 0.5, "box": [0.39, 0.22, 0.59, 0.87] },
+        { "frame": 1.0, "box": [0.71, 0.22, 0.91, 0.87] }
+      ]
+    }
+  ]
+}

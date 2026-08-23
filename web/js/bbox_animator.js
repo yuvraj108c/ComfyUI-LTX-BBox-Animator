@@ -1,4 +1,5 @@
 import { app } from "../../../scripts/app.js";
+import { api } from "../../../scripts/api.js";
 
 const EDITOR_COLORS = ["#71e2ff", "#ff7896", "#a8ef73", "#ffcd67", "#bc9cff", "#ff93dc", "#6ee7c1", "#ff9b6b"];
 const NODE_NAME = "LTXRegionalBBoxAnimator";
@@ -132,6 +133,7 @@ function openEditor(node) {
             .ltxrb-dialog{width:96vw;height:94vh;min-width:min(760px,96vw);min-height:min(540px,94vh);background:#10131b;border:1px solid #303747;border-radius:15px;box-shadow:0 32px 110px #000a;display:grid;grid-template-rows:minmax(54px,7%) minmax(0,1fr) minmax(100px,13%);overflow:hidden}
             .ltxrb-header{display:flex;align-items:center;justify-content:space-between;padding:0 1.4%;border-bottom:1px solid #262c39;background:#141822}
             .ltxrb-title{font-weight:700;font-size:15px;letter-spacing:.1px}.ltxrb-subtitle{color:#8993a7;font-size:11px;margin-left:10px}
+            .ltxrb-header-start{display:flex;align-items:center;gap:clamp(9px,1.3vw,19px)}.ltxrb-template-wrap{position:relative}.ltxrb-template-menu{position:absolute;top:calc(100% + 8px);left:0;z-index:5;width:min(360px,70vw);max-height:min(430px,65vh);overflow:auto;padding:7px;background:#171c28;border:1px solid #354055;border-radius:10px;box-shadow:0 15px 42px #0009}.ltxrb-template-menu[hidden]{display:none}.ltxrb-template-item{display:block;width:100%;padding:10px 11px;text-align:left;border:0;border-radius:7px;background:transparent;color:#e8edf7;cursor:pointer}.ltxrb-template-item:hover{background:#252e40}.ltxrb-template-name{display:block;font-size:12px;font-weight:650}.ltxrb-template-desc{display:block;margin-top:4px;color:#a7b1c3;font-size:11px;line-height:1.4}.ltxrb-template-separator{height:1px;margin:6px 2px;background:#30394a}.ltxrb-template-empty{padding:12px;color:#a7b1c3;font-size:11px}
             .ltxrb-body{display:grid;grid-template-columns:18% minmax(0,1fr) 25%;min-height:0;min-width:0}
             .ltxrb-left,.ltxrb-right{padding:clamp(10px,1.2vw,20px);background:#141822;min-width:0}.ltxrb-left{border-right:1px solid #262c39;display:flex;flex-direction:column;overflow:hidden}.ltxrb-left-main{min-height:0;overflow:auto;flex:1}.ltxrb-right{border-left:1px solid #262c39;overflow:auto}.ltxrb-reference-panel{flex:none;margin-top:clamp(10px,1.5vh,18px);padding:clamp(10px,.95vw,15px);border:1px solid #354257;border-radius:10px;background:linear-gradient(180deg,#1b2230 0%,#161b25 100%)}.ltxrb-reference-panel .ltxrb-section{color:#b9c9e1;margin:0 0 6px}.ltxrb-reference-hint{font-size:11px;line-height:1.45;color:#94a0b3;margin:0 0 10px}.ltxrb-reference-panel [data-action="background"]{width:100%}.ltxrb-reference-options{margin-top:10px}.ltxrb-reference-options .ltxrb-field{margin:0 0 9px}.ltxrb-reference-options [data-action="remove-background"]{width:100%}
             .ltxrb-section{font-size:10px;letter-spacing:1.2px;color:#8993a7;text-transform:uppercase;font-weight:700;margin:4px 0 10px}
@@ -151,7 +153,7 @@ function openEditor(node) {
             @media(max-width:850px){.ltxrb-body{grid-template-columns:20% minmax(0,1fr) 30%}.ltxrb-left,.ltxrb-right{padding:8px}.ltxrb-btn{padding:0 7px}.ltxrb-stage-note{font-size:9px}}
         </style>
         <div class="ltxrb-dialog">
-            <header class="ltxrb-header"><div><span class="ltxrb-title">LTX BBox Animator</span></div><div class="ltxrb-actions"><button class="ltxrb-btn" data-action="cancel">Cancel</button><button class="ltxrb-btn ltxrb-primary" data-action="save">Save & Close</button></div></header>
+            <header class="ltxrb-header"><div class="ltxrb-header-start"><span class="ltxrb-title">LTX BBox Animator</span><div class="ltxrb-template-wrap"><button class="ltxrb-btn" data-action="templates">Templates ▾</button><div class="ltxrb-template-menu" hidden></div></div></div><div class="ltxrb-actions"><button class="ltxrb-btn ltxrb-danger" data-action="reset">Reset</button><button class="ltxrb-btn" data-action="cancel">Cancel</button><button class="ltxrb-btn ltxrb-primary" data-action="save">Save & Close</button></div></header>
             <main class="ltxrb-body">
                 <aside class="ltxrb-left"><div class="ltxrb-left-main"><div class="ltxrb-section">Objects</div><button class="ltxrb-btn ltxrb-primary ltxrb-add" data-action="add">＋ Add object</button><div class="ltxrb-object-list"></div><div class="ltxrb-cost"></div></div><section class="ltxrb-reference-panel"><div class="ltxrb-section">Reference image</div><p class="ltxrb-reference-hint">Optional canvas guide for positioning objects.</p><button class="ltxrb-btn" data-action="background">Load image</button><div class="ltxrb-reference-options" hidden><div class="ltxrb-field"><label>Reference opacity</label><input class="ltxrb-input" data-field="background-opacity" type="range" min="0" max="1" step="0.05"></div><button class="ltxrb-btn ltxrb-danger" data-action="remove-background">Remove image</button></div><input data-field="background-file" type="file" accept="image/*" hidden></section></aside>
                 <section class="ltxrb-stage"><canvas class="ltxrb-canvas"></canvas><div class="ltxrb-stage-note"></div></section>
@@ -426,6 +428,163 @@ function openEditor(node) {
         renderAll();
     }
 
+    async function showTemplates() {
+        const menu = q(".ltxrb-template-menu");
+        if (!menu.hidden) {
+            menu.hidden = true;
+            return;
+        }
+        menu.replaceChildren();
+        const loading = document.createElement("div");
+        loading.className = "ltxrb-template-empty";
+        loading.textContent = "Loading templates…";
+        menu.appendChild(loading);
+        menu.hidden = false;
+        try {
+            const response = await api.fetchApi("/ltx_bbox_animator/templates");
+            if (!response.ok) throw new Error(await response.text());
+            const { templates = [] } = await response.json();
+            menu.replaceChildren();
+            if (!templates.length) {
+                const empty = document.createElement("div");
+                empty.className = "ltxrb-template-empty";
+                empty.textContent = "No templates found in the templates folder.";
+                menu.appendChild(empty);
+            }
+            for (const template of templates) {
+                const item = document.createElement("button");
+                item.className = "ltxrb-template-item";
+                const name = document.createElement("span");
+                name.className = "ltxrb-template-name";
+                name.textContent = `${template.name} · ${template.object_count} object${template.object_count === 1 ? "" : "s"}`;
+                const description = document.createElement("span");
+                description.className = "ltxrb-template-desc";
+                description.textContent = template.description;
+                item.append(name, description);
+                item.addEventListener("click", () => loadTemplate(template.id));
+                menu.appendChild(item);
+            }
+            const separator = document.createElement("div");
+            separator.className = "ltxrb-template-separator";
+            menu.appendChild(separator);
+            const saveTemplate = document.createElement("button");
+            saveTemplate.className = "ltxrb-template-item";
+            saveTemplate.textContent = "＋ Save current scene as template";
+            saveTemplate.addEventListener("click", saveCurrentTemplate);
+            menu.appendChild(saveTemplate);
+        } catch (error) {
+            menu.replaceChildren();
+            const failure = document.createElement("div");
+            failure.className = "ltxrb-template-empty";
+            failure.textContent = `Cannot load templates: ${error.message}`;
+            menu.appendChild(failure);
+        }
+    }
+
+    async function loadTemplate(templateId) {
+        try {
+            const response = await api.fetchApi(`/ltx_bbox_animator/templates/${encodeURIComponent(templateId)}`);
+            if (!response.ok) throw new Error(await response.text());
+            const template = await response.json();
+            if (project.objects.length && !confirm(`Load “${template.name}”? This replaces the current scene.`)) return;
+            const lastFrame = Math.max(0, frameCount - 1);
+            const denormalizeFrame = (value, fallback) => clamp(Math.round(Number(value ?? fallback) * lastFrame), 0, lastFrame);
+            project = {
+                version: 2,
+                style_prompt: String(template.style_prompt || ""),
+                scene_prompt: String(template.scene_prompt || ""),
+                objects: (template.objects || []).map((object, index) => ({
+                    id: uid(),
+                    name: object.name || `Object ${index + 1}`,
+                    prompt: object.prompt || "",
+                    strength: clamp(Number(object.strength ?? 1), 0, 5),
+                    enabled: object.enabled !== false,
+                    start_frame: denormalizeFrame(object.start_frame, 0),
+                    end_frame: denormalizeFrame(object.end_frame, 1),
+                    color: EDITOR_COLORS[index % EDITOR_COLORS.length],
+                    keyframes: (object.keyframes || []).map((keyframe) => ({
+                        frame: denormalizeFrame(keyframe.frame, 0),
+                        box: keyframe.box.map((value, axis) => Math.round(Number(value) * (axis % 2 ? height : width))),
+                    })).sort((a, b) => a.frame - b.frame),
+                })),
+                bg_image_base64: "",
+                bg_opacity: 0.45,
+            };
+            background = null;
+            selectedId = project.objects[0]?.id ?? null;
+            currentFrame = 0;
+            drawingNew = false;
+            q(".ltxrb-template-menu").hidden = true;
+            checkpoint();
+            renderAll();
+        } catch (error) {
+            alert(`Cannot load template: ${error.message}`);
+        }
+    }
+
+    async function saveCurrentTemplate() {
+        if (!project.objects.length) return alert("Add at least one object before saving a template.");
+        const name = prompt("Template name:");
+        if (!name?.trim()) return;
+        const lastFrame = Math.max(1, frameCount - 1);
+        const template = {
+            version: 1,
+            name: name.trim(),
+            description: `Custom scene with ${project.objects.length} object${project.objects.length === 1 ? "" : "s"}.`,
+            style_prompt: project.style_prompt,
+            scene_prompt: project.scene_prompt,
+            objects: project.objects.map((object) => ({
+                name: object.name,
+                prompt: object.prompt,
+                strength: object.strength,
+                enabled: object.enabled,
+                start_frame: Number((object.start_frame / lastFrame).toFixed(6)),
+                end_frame: Number((object.end_frame / lastFrame).toFixed(6)),
+                keyframes: object.keyframes.map((keyframe) => ({
+                    frame: Number((keyframe.frame / lastFrame).toFixed(6)),
+                    box: keyframe.box.map((value, axis) => Number((value / (axis % 2 ? height : width)).toFixed(6))),
+                })),
+            })),
+        };
+        try {
+            const response = await api.fetchApi("/ltx_bbox_animator/templates", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(template),
+            });
+            if (!response.ok) throw new Error(await response.text());
+            q(".ltxrb-template-menu").hidden = true;
+            alert(`Saved template “${name.trim()}”.`);
+        } catch (error) {
+            alert(`Cannot save template: ${error.message}`);
+        }
+    }
+
+    function resetProject() {
+        if (!confirm("Reset the entire scene? All objects, prompts, keyframes, and the reference image will be cleared.")) return;
+        if (playback) togglePlayback();
+        project = {
+            version: 2,
+            style_prompt: "",
+            scene_prompt: "",
+            objects: [],
+            bg_image_base64: "",
+            bg_opacity: 0.45,
+        };
+        background = null;
+        selectedId = null;
+        currentFrame = 0;
+        drawingNew = false;
+        drag = null;
+        zoom = 1;
+        panX = 0;
+        panY = 0;
+        q(".ltxrb-template-menu").hidden = true;
+        checkpoint();
+        renderAll();
+        fitCanvas();
+    }
+
     function jumpKey(direction) {
         const keys = selected()?.keyframes ?? [];
         const candidate = direction < 0
@@ -665,7 +824,9 @@ function openEditor(node) {
         const action = event.target.closest("[data-action]")?.dataset.action;
         if (!action) return;
         const object = selected();
-        if (action === "add") addObject();
+        if (action === "templates") showTemplates();
+        else if (action === "reset") resetProject();
+        else if (action === "add") addObject();
         else if (action === "save") save();
         else if (action === "cancel") cleanup();
         else if (action === "play") togglePlayback();

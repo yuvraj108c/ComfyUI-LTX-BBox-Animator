@@ -1,0 +1,120 @@
+{
+    "version": 1,
+    "name": "Golden Retriever Catching Frisbee in Park",
+    "description": "A golden retriever sprints across a sunny park lawn to catch a floating red frisbee while a distant cyclist rides along a paved background path.",
+    "style_prompt": "Cinematic golden hour lighting, soft natural backlighting, warm rich color palette, shallow depth of field with realistic motion blur, ground-level medium wide shot, photorealistic 8k detail.",
+    "scene_prompt": "A expansive sunlit park lawn with lush green grass and a paved path lined with trees in the background, where three subjects move across the scene.",
+    "objects": [
+        {
+            "name": "Golden Retriever",
+            "prompt": "An energetic golden retriever dog with silky golden fur, playful wide eyes, and an open happy mouth leaping dynamic into the air.",
+            "strength": 1.0,
+            "enabled": true,
+            "start_frame": 0.0,
+            "end_frame": 1.0,
+            "keyframes": [
+                {
+                    "frame": 0.0,
+                    "box": [
+                        0.10,
+                        0.60,
+                        0.28,
+                        0.85
+                    ]
+                },
+                {
+                    "frame": 0.5,
+                    "box": [
+                        0.38,
+                        0.55,
+                        0.58,
+                        0.82
+                    ]
+                },
+                {
+                    "frame": 1.0,
+                    "box": [
+                        0.65,
+                        0.50,
+                        0.85,
+                        0.78
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Red Frisbee",
+            "prompt": "A vivid red plastic flying disc spinning rapidly mid-air.",
+            "strength": 1.0,
+            "enabled": true,
+            "start_frame": 0.0,
+            "end_frame": 1.0,
+            "keyframes": [
+                {
+                    "frame": 0.0,
+                    "box": [
+                        0.80,
+                        0.20,
+                        0.90,
+                        0.26
+                    ]
+                },
+                {
+                    "frame": 0.5,
+                    "box": [
+                        0.55,
+                        0.38,
+                        0.64,
+                        0.44
+                    ]
+                },
+                {
+                    "frame": 1.0,
+                    "box": [
+                        0.72,
+                        0.52,
+                        0.80,
+                        0.57
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Cyclist",
+            "prompt": "A cyclist wearing a blue safety helmet and dark blue sportswear riding a modern silver bicycle.",
+            "strength": 1.0,
+            "enabled": true,
+            "start_frame": 0.0,
+            "end_frame": 1.0,
+            "keyframes": [
+                {
+                    "frame": 0.0,
+                    "box": [
+                        0.02,
+                        0.35,
+                        0.12,
+                        0.55
+                    ]
+                },
+                {
+                    "frame": 0.5,
+                    "box": [
+                        0.42,
+                        0.35,
+                        0.52,
+                        0.55
+                    ]
+                },
+                {
+                    "frame": 1.0,
+                    "box": [
+                        0.82,
+                        0.35,
+                        0.92,
+                        0.55
+                    ]
+                }
+            ]
+        }
+    ]
+}
