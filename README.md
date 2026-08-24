@@ -2,7 +2,7 @@
 
 A custom node for LTX 2.5 which adds support for bounding box control and regional prompting.
 
-Requires this IC-Lora: [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]()
+Requires this IC-Lora: [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox](https://huggingface.co/yuvraj108c/LTX-2.5-22b-IC-LoRA-BBox-Control)
 
 <img width="1200" height="400" alt="banner-1" src="https://github.com/user-attachments/assets/8a4ac3a4-8969-41ab-bc00-15eb2fd82fd9" />
 
@@ -25,13 +25,13 @@ Requires this IC-Lora: [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]()
    git clone https://github.com/yuvraj108c/ComfyUI-LTX-BBox-Animator
    ```
 
-2. Download [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox]() to `models/loras`.
+2. Download lora from [yuvraj108c/LTX-2.5-22b-IC-LoRA-Bbox](https://huggingface.co/yuvraj108c/LTX-2.5-22b-IC-LoRA-BBox-Control) to `models/loras`.
 
 3. Restart ComfyUI and refresh your browser.
 
 ## Quick Start
 
-1. Load the [example workflow]()
+1. Load the [example workflow](example_workflows/LTX-2.5_ICLoRA_BBox_Control_Two_Stage_Distilled.json)
 2. Set width/height/fps/frame count & open the bbox animator
 3. Click Add object, draw its bounding box, and enter its regional prompt
 4. Change position/size across time & click play to visualize movements
